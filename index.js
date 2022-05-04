@@ -43,6 +43,23 @@ async function run() {
       res.send(result)
     })
 
+    // update user put method
+    app.put('/product/:id', async (req, res) => {
+      const id = req.params.id;
+      const updateProduct = req.body;
+      const filter = {_id: objectId(id)};
+      const options = {upsert: true};
+      const updatedDoc = {
+        $set: {
+          name: updateProduct.name,
+          email: updateProduct.email,
+          password: updateProduct.password
+        }
+      };
+      const result = await userCollection.updateOne(filter, updatedDoc, options);
+      res.send(result)
+    })
+
   }finally{}
 }
 run().catch(console.dir);
