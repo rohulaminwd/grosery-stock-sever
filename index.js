@@ -28,6 +28,13 @@ async function run() {
       const products = await cursor.toArray();
       res.send(products);
     })
+    app.get('/myProduct', async (req, res) => {
+      const email = req.query.email
+      const query = { email: email };
+      const cursor = productCollection.find(query);
+      const products = await cursor.toArray();
+      res.send(products);
+    })
     app.get('/product/:id', async (req, res) => {
       const id = req.params.id;
       const query = {_id: objectId(id)}
@@ -46,15 +53,17 @@ async function run() {
     // update user put method
     app.put('/product/:id', async (req, res) => {
       const id = req.params.id;
-      const newQuantity = req.body;
+      const quantity = req.body;
+      const stock = quantity.stock;
+      console.log(quantity)
       const filter = {_id: objectId(id)};
       const options = {upsert: true};
       const updatedDoc = {
         $set: {
-          stock: newQuantity.stock
+          stock
         }
       };
-      const result = await userCollection.updateOne(filter, updatedDoc, options);
+      const result = await productCollection.updateOne(filter, updatedDoc, options);
       res.send(result)
     })
 
